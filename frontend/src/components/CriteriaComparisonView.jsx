@@ -1,5 +1,26 @@
 import React, { useState, useEffect } from "react";
 
+// Các giá trị lựa chọn theo thang đo AHP
+const scaleValues = [
+  9, 8, 7, 6, 5, 4, 3, 2, 1, 0.5, 0.3333333333333333, 0.25, 0.2,
+  0.16666666666666666, 0.14285714285714285, 0.125, 0.1111111111111111,
+];
+
+// Hàm chuyển số thực thành phân số để hiển thị
+const toFraction = (num) => {
+  const fractions = {
+    0.5: "1/2",
+    0.3333333333333333: "1/3",
+    0.25: "1/4",
+    0.2: "1/5",
+    0.16666666666666666: "1/6",
+    0.14285714285714285: "1/7",
+    0.125: "1/8",
+    0.1111111111111111: "1/9",
+  };
+  return Number.isInteger(num) ? num : fractions[num] || num.toFixed(4);
+};
+
 const CriteriaComparisonView = ({
   criteria,
   matrix,
@@ -7,32 +28,11 @@ const CriteriaComparisonView = ({
   onMatrixChange,
   onNext,
 }) => {
-  const scaleValues = [
-    9,
-    8,
-    7,
-    6,
-    5,
-    4,
-    3,
-    2,
-    1,
-    1 / 2,
-    1 / 3,
-    1 / 4,
-    1 / 5,
-    1 / 6,
-    1 / 7,
-    1 / 8,
-    1 / 9,
-  ];
-
   const [normalizedMatrix, setNormalizedMatrix] = useState(
     Array(criteria.length)
       .fill()
       .map(() => Array(criteria.length).fill(0))
   );
-
   const [weights, setWeights] = useState(Array(criteria.length).fill(0));
 
   useEffect(() => {
@@ -93,17 +93,21 @@ const CriteriaComparisonView = ({
                         className="w-full p-1"
                         value={cell}
                         onChange={(e) =>
-                          onMatrixChange(rowIndex, colIndex, e.target.value)
+                          onMatrixChange(
+                            rowIndex,
+                            colIndex,
+                            Number(e.target.value)
+                          )
                         }
                       >
                         {scaleValues.map((value) => (
                           <option key={value} value={value}>
-                            {value}
+                            {toFraction(value)}
                           </option>
                         ))}
                       </select>
                     ) : (
-                      cell.toFixed(4)
+                      <div className="text-center">{cell.toFixed(4)}</div>
                     )}
                   </td>
                 ))}
@@ -121,7 +125,7 @@ const CriteriaComparisonView = ({
         </table>
       </div>
 
-      {/* Ma trận đã chuẩn hóa */}
+      {/* Ma trận chuẩn hóa */}
       <h3 className="text-lg font-semibold mb-2">Ma trận đã chuẩn hóa:</h3>
       <div className="overflow-x-auto mb-6">
         <table className="w-full table-auto border-collapse mb-4">
@@ -163,19 +167,6 @@ const CriteriaComparisonView = ({
           thể hiện mức độ quan trọng hơn, giá trị từ 1/9 đến 1 thể hiện mức độ
           quan trọng kém hơn.
         </p>
-        {/* <p className="mb-4">
-          <strong>Giải thích kết quả:</strong>
-          <ul className="list-disc pl-5 mt-2">
-            <li>
-              Ma trận đã chuẩn hóa: Mỗi phần tử được tính bằng cách chia giá trị
-              gốc cho tổng cột tương ứng
-            </li>
-            <li>
-              Trọng số: Giá trị trung bình của các phần tử trong cùng một hàng
-              của ma trận đã chuẩn hóa
-            </li>
-          </ul>
-        </p> */}
       </div>
 
       <div className="flex justify-end mt-4">

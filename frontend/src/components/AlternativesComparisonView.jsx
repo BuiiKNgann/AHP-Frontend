@@ -1,5 +1,42 @@
 import React from "react";
 
+// Tỷ lệ để chọn trong bảng AHP
+const scaleValues = [
+  9,
+  8,
+  7,
+  6,
+  5,
+  4,
+  3,
+  2,
+  1,
+  1 / 2,
+  1 / 3,
+  1 / 4,
+  1 / 5,
+  1 / 6,
+  1 / 7,
+  1 / 8,
+  1 / 9,
+];
+
+// Hàm hiển thị tỷ lệ đẹp hơn
+const toFraction = (num) => {
+  const fractions = {
+    0.5: "1/2",
+    0.3333333333333333: "1/3",
+    0.25: "1/4",
+    0.2: "1/5",
+    0.16666666666666666: "1/6",
+    0.14285714285714285: "1/7",
+    0.125: "1/8",
+    0.1111111111111111: "1/9",
+  };
+
+  return Number.isInteger(num) ? num : fractions[num] || num.toFixed(4);
+};
+
 const AlternativesComparisonView = ({
   alternatives,
   criteria,
@@ -9,26 +46,6 @@ const AlternativesComparisonView = ({
   onNext,
   onPrev,
 }) => {
-  const scaleValues = [
-    9,
-    8,
-    7,
-    6,
-    5,
-    4,
-    3,
-    2,
-    1,
-    1 / 2,
-    1 / 3,
-    1 / 4,
-    1 / 5,
-    1 / 6,
-    1 / 7,
-    1 / 8,
-    1 / 9,
-  ];
-
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4">
@@ -54,7 +71,7 @@ const AlternativesComparisonView = ({
                   {alternatives[rowIndex]}
                 </th>
                 {row.map((cell, colIndex) => (
-                  <td key={colIndex} className="border px-2 py-1">
+                  <td key={colIndex} className="border px-2 py-1 text-center">
                     {rowIndex === colIndex ? (
                       "1"
                     ) : rowIndex < colIndex ? (
@@ -67,12 +84,12 @@ const AlternativesComparisonView = ({
                       >
                         {scaleValues.map((value) => (
                           <option key={value} value={value}>
-                            {value}
+                            {toFraction(value)}
                           </option>
                         ))}
                       </select>
                     ) : (
-                      cell.toFixed(4)
+                      toFraction(cell)
                     )}
                   </td>
                 ))}
@@ -86,7 +103,8 @@ const AlternativesComparisonView = ({
         <h3 className="text-lg font-semibold mb-2">Hướng dẫn:</h3>
         <p className="mb-4">
           So sánh các lựa chọn với nhau dựa trên tiêu chí hiện tại. Giá trị từ 1
-          đến 9 có nghĩa là tốt hơn, giá trị từ 1/9 đến 1 có nghĩa là kém hơn.
+          đến 9 thể hiện lựa chọn hàng quan trọng hơn so với cột. Giá trị từ 1/9
+          đến 1 thể hiện lựa chọn hàng kém hơn so với cột.
         </p>
       </div>
 
