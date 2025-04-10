@@ -18,7 +18,15 @@ const toFraction = (num) => {
     0.125: "1/8",
     0.1111111111111111: "1/9",
   };
-  return Number.isInteger(num) ? num : fractions[num] || num.toFixed(4);
+  return Number.isInteger(num)
+    ? num.toString()
+    : fractions[num] || num.toFixed(4);
+};
+
+// Hàm định dạng giá trị ô để hiển thị đẹp
+const formatCell = (val) => {
+  const num = parseFloat(val);
+  return toFraction(num);
 };
 
 const CriteriaComparisonView = ({
@@ -107,7 +115,7 @@ const CriteriaComparisonView = ({
                         ))}
                       </select>
                     ) : (
-                      <div className="text-center">{cell.toFixed(4)}</div>
+                      <div className="text-center">{formatCell(cell)}</div>
                     )}
                   </td>
                 ))}
@@ -117,7 +125,7 @@ const CriteriaComparisonView = ({
               <td className="border px-2 py-1">Tổng cột</td>
               {columnSums.map((sum, index) => (
                 <td key={index} className="border px-2 py-1 text-center">
-                  {sum.toFixed(4)}
+                  {formatCell(sum)}
                 </td>
               ))}
             </tr>
@@ -148,11 +156,11 @@ const CriteriaComparisonView = ({
                 </th>
                 {row.map((cell, colIndex) => (
                   <td key={colIndex} className="border px-2 py-1 text-center">
-                    {cell.toFixed(4)}
+                    {formatCell(cell)}
                   </td>
                 ))}
                 <td className="border px-2 py-1 text-center font-bold bg-blue-100">
-                  {weights[rowIndex].toFixed(4)}
+                  {formatCell(weights[rowIndex])}
                 </td>
               </tr>
             ))}
